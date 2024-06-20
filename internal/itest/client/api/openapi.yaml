@@ -1,0 +1,990 @@
+openapi: 3.0.0
+info:
+  title: SIGHTAI-SERVICES
+  version: 1.0.0
+servers:
+- url: http://localhost:10101/v1
+paths:
+  /accounts/{account_id}:
+    get:
+      description: Get account info
+      operationId: getAccountInfo
+      parameters:
+      - explode: false
+        in: path
+        name: account_id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: Get user accounts success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      tags:
+      - user
+  /gateways:
+    get:
+      description: Get all gateways
+      operationId: getGateways
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewaysResponse'
+          description: get gateway response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      tags:
+      - user
+  /sign_in:
+    post:
+      description: "Sign in with wallet credential. Return jwt token. If new user\
+        \ signin, send 500 token bonus."
+      operationId: signIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+          description: Sign in success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - signature: []
+      tags:
+      - user
+  /next_nonce:
+    get:
+      description: Get next nonce
+      operationId: getNextNonce
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNextNonceResponse'
+          description: Get account next nonce success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - user
+  /accounts/{account_id}/allowances:
+    get:
+      description: Get account allowances
+      operationId: getAccountAllowances
+      parameters:
+      - explode: false
+        in: path
+        name: account_id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllowancesResponse'
+          description: Get account allowances success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - user
+  /accounts/{account_id}/transactions:
+    get:
+      description: Get account transactions
+      operationId: getAccountTransactions
+      parameters:
+      - explode: false
+        in: path
+        name: account_id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: type
+        required: false
+        schema:
+          enum:
+          - deposit
+          - depositevent
+          - withdraw
+          - withdrawevent
+          - allowance
+          - pay
+          - receive
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: page_size
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsResponse'
+          description: Get user transactions success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - user
+  /accounts/{account_id}/receipts:
+    get:
+      description: User get receipts
+      operationId: userGetReceipts
+      parameters:
+      - explode: false
+        in: path
+        name: account_id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: gateway_address
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - finished
+          - paid
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: page_size
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptsResponse'
+          description: user get receipts response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - user
+  /withdraw:
+    post:
+      description: Withdraw currency
+      operationId: Withdraw
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawResponse'
+          description: Deposit success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      - signature: []
+      tags:
+      - user
+  /sign_allowance:
+    post:
+      description: Sign allowance to specific account.
+      operationId: signAllowance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignAllowanceRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleMessageResponse'
+          description: Sign allowance success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - user
+  /gateways/{account_id}/receipts:
+    get:
+      description: Gateway get receipts
+      operationId: gatewayGetReceipts
+      parameters:
+      - explode: false
+        in: path
+        name: account_id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: user_address
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - finished
+          - paid
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: page_size
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptsResponse'
+          description: get receipts response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - gateway
+  /receipt:
+    post:
+      description: Create receipt
+      operationId: createReceipt
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReceiptRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleMessageResponse'
+          description: create receipt response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - gateway
+  /gateways/{account_id}/withdraw:
+    post:
+      description: Gateway withdraw
+      operationId: gatewayWithdraw
+      parameters:
+      - explode: false
+        in: path
+        name: account_id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GatewayWithdrawRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawResponse'
+          description: Deposit success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      - signature: []
+      tags:
+      - gateway
+  /gateway:
+    put:
+      description: Upsert gateway
+      operationId: upsertGateway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertGatewayRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleMessageResponse'
+          description: Sign allowance success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - admin
+  /deposit:
+    post:
+      description: Deposit currency
+      operationId: AdminDeposit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleMessageResponse'
+          description: Deposit success response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - userJwtToken: []
+      tags:
+      - admin
+components:
+  schemas:
+    Account:
+      example:
+        address: address
+        role: user
+        available: available
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 0
+        nonce: 6
+        hold: hold
+      properties:
+        id:
+          format: int64
+          type: integer
+        created_at:
+          format: date-time
+          type: string
+        address:
+          type: string
+        hold:
+          type: string
+        available:
+          type: string
+        nonce:
+          format: int64
+          type: integer
+        role:
+          enum:
+          - user
+          - gateway
+          - admin
+          type: string
+      required:
+      - address
+      - id
+      - role
+      type: object
+    Allowance:
+      example:
+        from_account: 6
+        allowance: allowance
+        id: 0
+        version: 5
+        to_account: 1
+      properties:
+        id:
+          format: int64
+          type: integer
+        from_account:
+          format: int64
+          type: integer
+        to_account:
+          format: int64
+          type: integer
+        allowance:
+          type: string
+        version:
+          format: int64
+          type: integer
+      type: object
+    Gateway:
+      example:
+        endpoint: endpoint
+        account_id: 6
+        address: address
+        name: name
+        id: 0
+        deleted_at: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          format: int64
+          type: integer
+        account_id:
+          format: int64
+          type: integer
+        address:
+          type: string
+        endpoint:
+          type: string
+        name:
+          type: string
+        deleted_at:
+          format: date-time
+          type: string
+      type: object
+    Receipt:
+      example:
+        gateway_address: gateway_address
+        txn_id: txn_id
+        cost: cost
+        finished_at: 2000-01-23T04:56:07.000+00:00
+        user_address: user_address
+        id: 0
+        proof: proof
+        status: finished
+      properties:
+        id:
+          format: int64
+          type: integer
+        user_address:
+          type: string
+        gateway_address:
+          type: string
+        finished_at:
+          format: date-time
+          type: string
+        cost:
+          type: string
+        proof:
+          type: string
+        txn_id:
+          type: string
+        status:
+          enum:
+          - finished
+          - paid
+          type: string
+      required:
+      - gateway_address
+      - id
+      - user_address
+      type: object
+    Transaction:
+      example:
+        available_delta: available_delta
+        account_id: 6
+        notes: notes
+        hold_delta: hold_delta
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 0
+        type: deposit
+      properties:
+        id:
+          format: int64
+          type: integer
+        created_at:
+          format: date-time
+          type: string
+        account_id:
+          format: int64
+          type: integer
+        available_delta:
+          type: string
+        hold_delta:
+          type: string
+        type:
+          enum:
+          - deposit
+          - depositevent
+          - withdraw
+          - withdrawevent
+          - allowance
+          - pay
+          - receive
+          type: string
+        notes:
+          type: string
+      required:
+      - account_id
+      - id
+      type: object
+    SignInRequest:
+      example:
+        address: address
+      properties:
+        address:
+          type: string
+      required:
+      - address
+      type: object
+    SignAllowanceRequest:
+      example:
+        to_account_id: 0
+        allowance: allowance
+        version: 6
+      properties:
+        to_account_id:
+          format: int64
+          type: integer
+        allowance:
+          type: string
+        version:
+          format: int64
+          type: integer
+      required:
+      - allowance
+      - to_account
+      type: object
+    DepositRequest:
+      description: ONLY FOR ADMIN TEST
+      example:
+        amount: amount
+        address: address
+      properties:
+        address:
+          type: string
+        amount:
+          type: string
+      required:
+      - address
+      - amount
+      type: object
+    WithdrawRequest:
+      example:
+        amount: amount
+      properties:
+        amount:
+          type: string
+      required:
+      - amount
+      type: object
+    CreateReceiptRequest:
+      example:
+        gateway_address: gateway_address
+        txn_id: txn_id
+        cost: cost
+        finished_at: 2000-01-23T04:56:07.000+00:00
+        user_address: user_address
+        proof: proof
+        status: finished
+      properties:
+        user_address:
+          type: string
+        gateway_address:
+          type: string
+        finished_at:
+          format: date-time
+          type: string
+        cost:
+          type: string
+        proof:
+          type: string
+        txn_id:
+          type: string
+        status:
+          enum:
+          - finished
+          - paid
+          type: string
+      required:
+      - cost
+      - finished_at
+      - gateway_address
+      - proof
+      - status
+      - txn_id
+      - user_address
+      type: object
+    UpsertGatewayRequest:
+      example:
+        endpoint: endpoint
+        address: address
+        deleted: true
+        name: name
+        id: 0
+      properties:
+        id:
+          format: int64
+          type: integer
+        address:
+          type: string
+        endpoint:
+          type: string
+        name:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - address
+      type: object
+    GatewayWithdrawRequest:
+      example:
+        receipt_ids:
+        - 0
+        - 0
+      properties:
+        receipt_ids:
+          items:
+            format: int64
+            type: integer
+          type: array
+      required:
+      - receipt_ids
+      type: object
+    SignInResponse:
+      example:
+        user_token: user_token
+      properties:
+        user_token:
+          description: user jwt token
+          type: string
+      required:
+      - user_token
+      type: object
+    GatewaysResponse:
+      example:
+        gateways:
+        - endpoint: endpoint
+          account_id: 6
+          address: address
+          name: name
+          id: 0
+          deleted_at: 2000-01-23T04:56:07.000+00:00
+        - endpoint: endpoint
+          account_id: 6
+          address: address
+          name: name
+          id: 0
+          deleted_at: 2000-01-23T04:56:07.000+00:00
+      properties:
+        gateways:
+          items:
+            $ref: '#/components/schemas/Gateway'
+          type: array
+      type: object
+    AllowancesResponse:
+      example:
+        from_allowances:
+        - from_account: 6
+          allowance: allowance
+          id: 0
+          version: 5
+          to_account: 1
+        - from_account: 6
+          allowance: allowance
+          id: 0
+          version: 5
+          to_account: 1
+        to_allowances:
+        - from_account: 6
+          allowance: allowance
+          id: 0
+          version: 5
+          to_account: 1
+        - from_account: 6
+          allowance: allowance
+          id: 0
+          version: 5
+          to_account: 1
+      properties:
+        from_allowances:
+          items:
+            $ref: '#/components/schemas/Allowance'
+          type: array
+        to_allowances:
+          items:
+            $ref: '#/components/schemas/Allowance'
+          type: array
+      type: object
+    AccountNextNonceResponse:
+      example:
+        next_nonce: 0
+      properties:
+        next_nonce:
+          description: the next available nonce
+          type: integer
+      type: object
+    WithdrawResponse:
+      example:
+        sig: sig
+        amount: amount
+        nonce: 0
+      properties:
+        sig:
+          type: string
+        nonce:
+          type: integer
+        amount:
+          type: string
+      type: object
+    TransactionsResponse:
+      example:
+        transactions:
+        - available_delta: available_delta
+          account_id: 6
+          notes: notes
+          hold_delta: hold_delta
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 0
+          type: deposit
+        - available_delta: available_delta
+          account_id: 6
+          notes: notes
+          hold_delta: hold_delta
+          created_at: 2000-01-23T04:56:07.000+00:00
+          id: 0
+          type: deposit
+      properties:
+        transactions:
+          items:
+            $ref: '#/components/schemas/Transaction'
+          type: array
+      type: object
+    ReceiptsResponse:
+      example:
+        receipts:
+        - gateway_address: gateway_address
+          txn_id: txn_id
+          cost: cost
+          finished_at: 2000-01-23T04:56:07.000+00:00
+          user_address: user_address
+          id: 0
+          proof: proof
+          status: finished
+        - gateway_address: gateway_address
+          txn_id: txn_id
+          cost: cost
+          finished_at: 2000-01-23T04:56:07.000+00:00
+          user_address: user_address
+          id: 0
+          proof: proof
+          status: finished
+      properties:
+        receipts:
+          items:
+            $ref: '#/components/schemas/Receipt'
+          type: array
+      type: object
+    SimpleMessageResponse:
+      example:
+        message: message
+      properties:
+        message:
+          type: string
+      required:
+      - message
+      type: object
+    Error:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+  securitySchemes:
+    userJwtToken:
+      in: header
+      name: X-USER-TOKEN
+      type: apiKey
+    signature:
+      description: signed by wallet private key
+      in: header
+      name: X-SIGNATURE
+      type: apiKey

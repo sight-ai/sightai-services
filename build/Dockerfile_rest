@@ -1,0 +1,17 @@
+FROM golang:1.18-alpine
+
+ARG config_file
+
+RUN mkdir -p /opt/sightservices/conf
+WORKDIR /opt/sightservices/
+
+COPY $config_file /opt/sightservices/conf/config.yml
+COPY rest /opt/sightservices/rest
+
+EXPOSE 10101
+
+RUN chmod +x /opt/sightservices/rest
+RUN chmod +x /opt/sightservices/conf/config.yml
+ENTRYPOINT /opt/sightservices/rest
+
+CMD ["./rest"]

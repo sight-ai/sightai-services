@@ -1,0 +1,15 @@
+FROM golang:1.18-alpine
+
+ARG config_file
+
+RUN mkdir -p /opt/sightservices/conf
+WORKDIR /opt/sightservices/
+
+COPY $config_file /opt/sightservices/conf/config.yml
+COPY puller /opt/sightservices/puller
+
+RUN chmod +x /opt/sightservices/puller
+RUN chmod +x /opt/sightservices/conf/config.yml
+ENTRYPOINT /opt/sightservices/puller
+
+CMD ["./puller"]

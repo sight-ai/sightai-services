@@ -1,0 +1,32 @@
+appName: sightchain
+env: local
+
+hostAndPort: :10101
+
+jwtSecret:
+jwtPrv: build/id_rsa
+jwtPub: build/id_rsa.pem
+
+privateKey:
+
+sightChainId:
+
+# mysql
+mysql:
+  master:
+    dsn: root:@tcp(localhost:3306)/sightai-services?parseTime=true
+    maxIdle: 3
+    maxOpen: 3
+    maxLifeTime: 120
+  slave:
+    dsn: root:@tcp(localhost:3306)/sightai-services?parseTime=true
+    maxIdle: 3
+    maxOpen: 3
+    maxLifeTime: 120
+
+# subgraph
+subgraph:
+  nodes:
+    - endpoint:
+      chainID:
+      chainName: sightchain
