@@ -35,12 +35,17 @@ func main() {
 	// initialize dao
 	entities.Initialize(dao)
 	// 1-admin 2-gateway 3-user 4-gateway
-	user, err := entities.AccountDao.Get(context.Background(), 1)
+	user, err := entities.AccountDao.Get(context.Background(), 3)
 	check(err)
 
 	jwtToken, err := jwt_auth.GenerateJwtFromAccount(user)
 	check(err)
 
 	log.Info().Msgf("jwt: %s", jwtToken)
+
+	id, err := jwt_auth.GetAccountID(jwtToken)
+	check(err)
+
+	log.Info().Msgf("account id: %d", id)
 
 }

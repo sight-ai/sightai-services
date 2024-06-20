@@ -18,7 +18,6 @@ var Cfg = &struct {
 	AppName      string               `json:"appName"`
 	Env          string               `json:"env"`
 	HostAndPort  string               `json:"hostAndPort"`
-	JwtSecret    string               `json:"jwtSecret"`
 	JwtPrv       string               `json:"jwtPrv"`
 	JwtPub       string               `json:"jwtPub"`
 	PrivateKey   string               `json:"privateKey"`

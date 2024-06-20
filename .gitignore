@@ -28,8 +28,8 @@ pkg
 # Test files
 playground
 internal/itest/client
-/build/id_rsa
-/build/id_rsa.pem
+/build/prvKey
+/build/pubKey
 /build/puller
 /build/rest
 /build/config.yml

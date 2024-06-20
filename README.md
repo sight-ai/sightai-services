@@ -73,11 +73,19 @@ This is an example of how to list things you need to use the software and how to
    ```
 3. Update your configurations in `build/config.yml`
    ```yml
-   jwtSecret: "YOUR JWT SECRET"
-   privateKey: "YOUR PRIVATE KEY"
+   jwtPrv: "YOUR RSA256 PRIVATE KEY PATH"
+   jwtPub: "YOUR RSA256 PUBLIC KEY PATH"
+   privateKey: "YOUR PRIVATE KEY OF YOUR VAULT WITHDRAWER"
    mysql: "YOUR MYSQL SETUP"
    subgraph: "YOUR SUBGRAPH SETUP"
    ```
+    to generate rsa 256 private & public keys:
+   ```sh
+   cd build
+   ssh-keygen -t rsa -b 4096 -m PEM -f prvKey
+   openssl rsa -in jwtRS256.key -pubout -outform PEM -out pubKey
+   ```
+   
 4. Creat your database with initial data
    - Config initial data in tools/insert_static_data/data/csv/...
    - Run following commands to setup database 

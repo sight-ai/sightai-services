@@ -1,9 +1,12 @@
 package jwt_auth
 
 import (
+	"crypto/rsa"
 	"github.com/capybaralabs-xyz/sightai-services/internal/entities"
 	"github.com/capybaralabs-xyz/sightai-services/internal/lib/utils/config"
 	"github.com/golang-jwt/jwt"
+	"log"
+	"os"
 	"strings"
 	"time"
 )
@@ -14,43 +17,38 @@ const (
 	JwtMapExpField  = "exp"
 )
 
-//type JWT struct {
-//	privateKey *rsa.PrivateKey
-//	publicKey  *rsa.PublicKey
-//}
-//
-//var jwtKeys *JWT
-//
-//func lazyLoadJwt() {
-//	if jwtKeys == nil {
-//		prvKey, err := os.ReadFile(config.Cfg.JwtPrv)
-//		if err != nil {
-//			log.Fatalln(err)
-//		}
-//		pubKey, err := os.ReadFile(config.Cfg.JwtPub)
-//		if err != nil {
-//			log.Fatalln(err)
-//		}
-//
-//		privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(prvKey)
-//		if err != nil {
-//			log.Fatalln(err)
-//		}
-//
-//		publicKey, err := jwt.ParseRSAPublicKeyFromPEM(pubKey)
-//		if err != nil {
-//			log.Fatalln(err)
-//		}
-//
-//		jwtKeys = &JWT{
-//			privateKey,
-//			publicKey,
-//		}
-//	}
-//}
+type JWT struct {
+	PrivateKey *rsa.PrivateKey
+	PublicKey  *rsa.PublicKey
+}
+
+var JwtKeys *JWT
+
+func LazyLoadJwt() {
+	if JwtKeys == nil {
+		prvKey, _ := os.ReadFile(config.Cfg.JwtPrv)
+
+		pubKey, _ := os.ReadFile(config.Cfg.JwtPub)
+
+		privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(prvKey)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		publicKey, err := jwt.ParseRSAPublicKeyFromPEM(pubKey)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		JwtKeys = &JWT{
+			privateKey,
+			publicKey,
+		}
+	}
+}
 
 func GenerateJwtFromAccount(account *entities.Account) (string, error) {
-	//lazyLoadJwt()
+	LazyLoadJwt()
 
 	// token with claims
 	claims := jwt.MapClaims{}
@@ -59,7 +57,7 @@ func GenerateJwtFromAccount(account *entities.Account) (string, error) {
 	claims[JwtMapExpField] = time.Now().Add(time.Hour * 24 * 365).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
-	t, err := token.SignedString([]byte(config.Cfg.JwtSecret))
+	t, err := token.SignedString(JwtKeys.PrivateKey)
 	if err != nil {
 		return "", err
 	}
@@ -67,7 +65,7 @@ func GenerateJwtFromAccount(account *entities.Account) (string, error) {
 }
 
 func GetAccountID(jwtToken string) (uint, error) {
-	//lazyLoadJwt()
+	LazyLoadJwt()
 
 	if strings.HasPrefix(jwtToken, "Bearer") {
 		jwtToken = strings.TrimSpace(jwtToken[len("Bearer"):])
@@ -78,9 +76,10 @@ func GetAccountID(jwtToken string) (uint, error) {
 		jwtToken,
 		claims,
 		func(token *jwt.Token) (interface{}, error) {
-			return []byte(config.Cfg.JwtSecret), nil
+			return JwtKeys.PublicKey, nil
 		},
 	)
+
 	if err != nil {
 		return 0, err
 	}

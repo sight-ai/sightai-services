@@ -59,7 +59,7 @@ func SetupRest(e *echo.Echo) error {
 
 	// api v1, auth router and no-auth router depends on if jwt token is needed
 	authRouter := e.Group("/v1")
-	authRouter.Use(sight_middleware.Jwt(config.Cfg.JwtSecret))
+	authRouter.Use(sight_middleware.Jwt())
 	noAuthRouter := e.Group("/v1")
 
 	// General endpoints for all accounts

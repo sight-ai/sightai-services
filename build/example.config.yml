@@ -3,9 +3,8 @@ env: local
 
 hostAndPort: :10101
 
-jwtSecret:
-jwtPrv: build/id_rsa
-jwtPub: build/id_rsa.pem
+jwtPrv: build/prvKey
+jwtPub: build/pubKey
 
 privateKey:
 
