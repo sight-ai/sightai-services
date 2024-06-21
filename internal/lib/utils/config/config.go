@@ -21,6 +21,7 @@ var Cfg = &struct {
 	JwtPrv       string               `json:"jwtPrv"`
 	JwtPub       string               `json:"jwtPub"`
 	PrivateKey   string               `json:"privateKey"`
+	AdminAddress string               `json:"adminAddress"`
 	SightChainId string               `json:"sightChainId"`
 	Mysql        *mysql.Config        `json:"mysql"`
 	Subgraph     *lib_subgraph.Config `json:"subgraph"`

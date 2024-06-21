@@ -76,6 +76,7 @@ This is an example of how to list things you need to use the software and how to
    jwtPrv: "YOUR RSA256 PRIVATE KEY PATH"
    jwtPub: "YOUR RSA256 PUBLIC KEY PATH"
    privateKey: "YOUR PRIVATE KEY OF YOUR VAULT WITHDRAWER"
+   adminAddress: "YOUR ADMIN ADDRESS"
    mysql: "YOUR MYSQL SETUP"
    subgraph: "YOUR SUBGRAPH SETUP"
    ```

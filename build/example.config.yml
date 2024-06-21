@@ -8,6 +8,8 @@ jwtPub: build/pubKey
 
 privateKey:
 
+adminAddress:
+
 sightChainId:
 
 # mysql
