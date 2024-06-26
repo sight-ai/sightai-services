@@ -3,6 +3,7 @@ package encode
 import (
 	"bytes"
 	"encoding/hex"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"math/big"
 )
@@ -19,8 +20,20 @@ func EncodeBytesString(v string) []byte {
 	return decoded
 }
 
+func EncodeStringArray(arr []string) []byte {
+	var res [][]byte
+	for _, v := range arr {
+		res = append(res, []byte(v))
+	}
+	return bytes.Join(res, nil)
+}
+
 func EncodeString(v string) []byte {
 	return []byte(v)
+}
+
+func EncodeAddress(v string) []byte {
+	return common.HexToAddress(v).Bytes()
 }
 
 func EncodeUint256(v string) []byte {

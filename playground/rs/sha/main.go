@@ -34,7 +34,7 @@ type SignInRequest struct {
 func main() {
 	//address := "0xc0271BDA95f78EF80728152eE9B6c5A915E91DA5"
 	//sig := "0x191c5bbb176070a37089cfa50b545271205647721ec00d393c6af1723e9eb53e3766eeb84cfc4d1e0c6cac8e640decfd573d6e2fe6a68655204de225c2f0970c1c"
-	privateKey, err := crypto.HexToECDSA("10667ccdfed55f1e03481b6c8dffa2ff29f357de261226f520dcf0210a374bef")
+	privateKey, err := crypto.HexToECDSA("ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80")
 	checkErr(err)
 
 	publicKey := privateKey.Public()
@@ -46,12 +46,13 @@ func main() {
 	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
 	fmt.Println("publicKeyBytes ", hexutil.Encode(publicKeyBytes))
 
-	nonce := strconv.FormatUint(uint64(2), 10)
-	amount := "100100000000000000000"
+	nonce := strconv.FormatUint(uint64(1), 10)
+	amount := "10000000000000000000"
 
 	msg := encode.EncodePacked(
 		encode.EncodeUint256(nonce),
 		encode.EncodeUint256(amount),
+		encode.EncodeUint256("31337"),
 	)
 
 	msgHash := crypto.Keccak256Hash(msg)

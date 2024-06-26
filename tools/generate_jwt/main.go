@@ -38,7 +38,7 @@ func main() {
 	user, err := entities.AccountDao.Get(context.Background(), 3)
 	check(err)
 
-	jwtToken, err := jwt_auth.GenerateJwtFromAccount(user)
+	jwtToken, err := jwt_auth.GenerateJwtFromAccount(user, "")
 	check(err)
 
 	log.Info().Msgf("jwt: %s", jwtToken)

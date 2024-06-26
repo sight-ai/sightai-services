@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	JwtMapUIDField  = "uid"
-	JwtMapAddrField = "address"
-	JwtMapExpField  = "exp"
+	JwtMapUIDField    = "uid"
+	JwtMapAddrField   = "address"
+	JwtMapExpField    = "exp"
+	JwtMapDomainField = "domain"
 )
 
 type JWT struct {
@@ -47,7 +48,7 @@ func LazyLoadJwt() {
 	}
 }
 
-func GenerateJwtFromAccount(account *entities.Account) (string, error) {
+func GenerateJwtFromAccount(account *entities.Account, domain string) (string, error) {
 	LazyLoadJwt()
 
 	// token with claims
@@ -55,6 +56,8 @@ func GenerateJwtFromAccount(account *entities.Account) (string, error) {
 	claims[JwtMapUIDField] = account.ID
 	claims[JwtMapAddrField] = account.Address
 	claims[JwtMapExpField] = time.Now().Add(time.Hour * 24 * 365).Unix()
+	claims[JwtMapDomainField] = domain
+
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
 	t, err := token.SignedString(JwtKeys.PrivateKey)

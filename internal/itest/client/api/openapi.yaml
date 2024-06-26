@@ -704,8 +704,11 @@ components:
     SignInRequest:
       example:
         address: address
+        domain: domain
       properties:
         address:
+          type: string
+        domain:
           type: string
       required:
       - address

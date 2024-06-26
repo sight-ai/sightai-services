@@ -81,7 +81,7 @@ func SignIn(ctx context.Context, req *models.SignInRequest, sig string) (*models
 		}
 	}
 
-	jwtToken, err := jwt_auth.GenerateJwtFromAccount(account)
+	jwtToken, err := jwt_auth.GenerateJwtFromAccount(account, req.Domain)
 	if err != nil {
 		return nil, rest.ErrInternalServerError(ctx, err)
 	}

@@ -141,6 +141,8 @@ components:
       properties:
         address:
           type: string
+        domain:
+          type: string
       required:
         - address
 

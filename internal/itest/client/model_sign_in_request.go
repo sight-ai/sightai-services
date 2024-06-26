@@ -17,6 +17,7 @@ import (
 // SignInRequest struct for SignInRequest
 type SignInRequest struct {
 	Address string `json:"address"`
+	Domain *string `json:"domain,omitempty"`
 }
 
 // NewSignInRequest instantiates a new SignInRequest object
@@ -61,10 +62,45 @@ func (o *SignInRequest) SetAddress(v string) {
 	o.Address = v
 }
 
+// GetDomain returns the Domain field value if set, zero value otherwise.
+func (o *SignInRequest) GetDomain() string {
+	if o == nil || o.Domain == nil {
+		var ret string
+		return ret
+	}
+	return *o.Domain
+}
+
+// GetDomainOk returns a tuple with the Domain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SignInRequest) GetDomainOk() (*string, bool) {
+	if o == nil || o.Domain == nil {
+		return nil, false
+	}
+	return o.Domain, true
+}
+
+// HasDomain returns a boolean if a field has been set.
+func (o *SignInRequest) HasDomain() bool {
+	if o != nil && o.Domain != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDomain gets a reference to the given string and assigns it to the Domain field.
+func (o *SignInRequest) SetDomain(v string) {
+	o.Domain = &v
+}
+
 func (o SignInRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["address"] = o.Address
+	}
+	if o.Domain != nil {
+		toSerialize["domain"] = o.Domain
 	}
 	return json.Marshal(toSerialize)
 }
